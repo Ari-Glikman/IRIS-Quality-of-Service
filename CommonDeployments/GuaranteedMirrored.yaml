@@ -9,7 +9,6 @@ spec:
     name: iris-cpf
   imagePullSecrets:
     - name: intersystems-pull-secret
-
   topology:
     data:
       image: containers.intersystems.com/intersystems/iris:2024.1
