@@ -97,8 +97,6 @@ spec:
         loginSecret:
           name: iris-webgateway-secret
 
-
-
     webgateway:
       replicas: 1
       image: containers.intersystems.com/intersystems/webgateway:2024.1
@@ -116,7 +114,6 @@ spec:
         resources:
           requests: 
             storage: "2Gi"
-  
       applicationPaths:
         - /csp/sys
         - /csp/user
