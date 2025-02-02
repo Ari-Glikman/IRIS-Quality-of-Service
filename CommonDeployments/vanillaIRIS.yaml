@@ -1,0 +1,77 @@
+apiVersion: intersystems.com/v1alpha1
+kind: IrisCluster
+metadata:
+  name: burstable
+spec:
+  licenseKeySecret:
+    name: iris-key-secret
+  configSource:
+    name: iris-cpf
+  imagePullSecrets:
+    - name: intersystems-pull-secret
+  topology:
+    data:
+      image: containers.intersystems.com/intersystems/iris:2024.1
+      compatibilityVersion: "2024.1.3"
+      mirrored: false
+      podTemplate:
+        spec:
+          resources:
+            requests:
+              memory: "8Gi"
+              cpu: "2"
+            limits:
+              memory: "8Gi"
+              cpu: "2"     
+
+      storageDB:
+        resources:
+          requests:
+            storage: "2Gi"
+      storageWIJ:
+        resources:
+          requests:
+            storage: "2Gi"
+      storageJournal1:
+        resources:
+          requests:
+            storage: "2Gi"
+      storageJournal2:
+        resources:
+          requests:
+            storage: "2Gi"
+
+    webgateway:
+      replicas: 1
+      image: containers.intersystems.com/intersystems/webgateway:2024.1
+      type: apache
+      podTemplate:
+        spec:
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"
+            limits:
+              memory: "2Gi"
+              cpu: "1" 
+
+      storageDB:
+        resources:
+          requests: 
+            storage: "2Gi"
+  
+      applicationPaths:
+        - /csp/sys
+        - /csp/user
+        - /csp/broker
+        - /api
+        - /isc
+        - /oauth2
+        - /ui
+        - /csp/healthshare
+      alternativeServers: LoadBalancing
+      loginSecret:
+        name: iris-webgateway-secret
+  serviceTemplate:
+    spec:
+      type: ClusterIP
