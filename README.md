@@ -2,7 +2,7 @@
 
 The purpose of this repo is to show how to upgrade your IRIS deployment from Burstable QoS to Guaranteed QoS.
 
-Note the additions in Guaranteed.yaml and compare to vanillaIRIS.yaml.
+Note the additions in Guaranteed.yaml (Guaranteed QoS) and compare to vanillaIRIS.yaml (Burstable QoS).
 
 Per [Kubernetes Docs](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/) on QoS:
 For a Pod to be given a QoS class of Guaranteed:
