@@ -16,3 +16,7 @@ Note that this includes initContainers. Assuming we deploy with *useIrisFsGroup:
 
 Hence we must set their limits & requests for both memory & cpu.
 
+You can confirm your QoS Class on the pod of your choice with the following:
+
+*kubectl describe pod <pod name<pod name>> -n <namespace<namespace>>*
+
