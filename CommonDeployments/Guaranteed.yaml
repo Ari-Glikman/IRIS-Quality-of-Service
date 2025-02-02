@@ -25,10 +25,10 @@ spec:
             name: iriscluster-init
             resources:
               requests:
-                memory: "12Gi"
+                memory: "8Gi"
                 cpu: "2"
               limits:
-                memory: "12Gi"
+                memory: "8Gi"
                 cpu: "2"  
             securityContext:
               runAsGroup: 0
@@ -45,10 +45,10 @@ spec:
               name: iris-journal2
           resources:
             requests:
-              memory: "12Gi"
+              memory: "8Gi"
               cpu: "2"
             limits:
-              memory: "12Gi"
+              memory: "8Gi"
               cpu: "2"     
 
       storageDB:
