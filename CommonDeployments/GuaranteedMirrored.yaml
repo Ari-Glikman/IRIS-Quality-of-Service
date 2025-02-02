@@ -1,0 +1,150 @@
+apiVersion: intersystems.com/v1alpha1
+kind: IrisCluster
+metadata:
+  name: guranteed-mirrored
+spec:
+  licenseKeySecret:
+    name: iris-key-secret
+  configSource:
+    name: iris-cpf
+  imagePullSecrets:
+    - name: intersystems-pull-secret
+
+  topology:
+    data:
+      image: containers.intersystems.com/intersystems/iris:2024.1
+      compatibilityVersion: "2024.1.3"
+      mirrored: true
+
+      podTemplate:
+        spec:
+          initContainers:
+          - command:
+            - sh
+            - -c
+            - /bin/chown -R 51773:51773 /irissys/*
+            image: busybox
+            name: iriscluster-init
+            resources:
+              requests:
+                memory: "8Gi"
+                cpu: "2"
+              limits:
+                memory: "8Gi"
+                cpu: "2"  
+            securityContext:
+              runAsGroup: 0
+              runAsNonRoot: false
+              runAsUser: 0
+            volumeMounts:
+            - mountPath: /irissys/data/
+              name: iris-data
+            - mountPath: /irissys/wij/
+              name: iris-wij
+            - mountPath: /irissys/journal1/
+              name: iris-journal1
+            - mountPath: /irissys/journal2/
+              name: iris-journal2
+          resources:
+            requests:
+              memory: "8Gi"
+              cpu: "2"
+            limits:
+              memory: "8Gi"
+              cpu: "2"     
+
+      storageDB:
+        resources:
+          requests:
+            storage: "2Gi"
+      storageWIJ:
+        resources:
+          requests:
+            storage: "2Gi"
+      storageJournal1:
+        resources:
+          requests:
+            storage: "2Gi"
+      storageJournal2:
+        resources:
+          requests:
+            storage: "2Gi"
+      
+      webgateway:
+        image: containers.intersystems.com/intersystems/webgateway:2024.1
+        type: apache
+        podTemplate:
+          spec:
+            resources:
+              requests:
+                memory: "2Gi"
+                cpu: "1"
+              limits:
+                memory: "2Gi"
+                cpu: "1" 
+      
+        applicationPaths:
+          - /csp/sys
+          - /csp/user
+          - /csp/broker
+          - /api
+          - /isc
+          - /oauth2
+          - /ui
+          - /csp/healthshare
+          - /data00
+          - /data01
+        alternativeServers: LoadBalancing
+        loginSecret:
+          name: iris-webgateway-secret
+
+
+
+    webgateway:
+      replicas: 1
+      image: containers.intersystems.com/intersystems/webgateway:2024.1
+      type: apache
+      podTemplate:
+        spec:
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"
+            limits:
+              memory: "2Gi"
+              cpu: "1" 
+      storageDB:
+        resources:
+          requests: 
+            storage: "2Gi"
+  
+      applicationPaths:
+        - /csp/sys
+        - /csp/user
+        - /csp/broker
+        - /api
+        - /isc
+        - /oauth2
+        - /ui
+        - /csp/healthshare
+        - /data00
+        - /data01
+      alternativeServers: LoadBalancing
+      loginSecret:
+        name: iris-webgateway-secret
+
+    arbiter: 
+      image: containers.intersystems.com/intersystems/arbiter:2024.1
+      podTemplate:
+        spec:
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"
+            limits:
+              memory: "2Gi"
+              cpu: "1" 
+
+  serviceTemplate:
+    spec:
+      type: ClusterIP
