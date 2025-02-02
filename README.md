@@ -20,3 +20,7 @@ You can confirm your QoS Class on the pod of your choice with the following:
 
 *kubectl describe pod <pod name<pod name>> -n <namespace<namespace>>*
 
+and towards the bottom note:
+
+QoS Class: {BestEffort|Burstable|Guaranteed}
+
